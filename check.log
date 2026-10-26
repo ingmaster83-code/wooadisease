@@ -1,0 +1,10 @@
+C:\����\wooahouse\wooadisease\scripts\check_site.py:27: SyntaxWarning: invalid escape sequence '\/'
+  try: json.loads(ld.replace("<\/", "</"))
+0 0
+3000 196
+6000 401
+9000 591
+12000 795
+페이지 14947 깨진 링크 0 []
+중복 title 0 []
+JSON-LD 오류 0 josa 미해결 0

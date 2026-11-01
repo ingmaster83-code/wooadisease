@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """우아질병 정적 사이트 생성기 → _site/.  입력: data/diseases.json.gz (build_data.py)"""
+from urllib.parse import quote
 import sys, json, re, gzip, shutil, time, collections
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent))
@@ -241,6 +242,7 @@ for code, s in STATS.items():
         for dep, v in s[k].items():
             if v[0]: DEPTS[dep][k].append((code, v))
 DEPT_SLUG = {d: sl(d) for d in DEPTS}
+XL_HOSP_DEPTS = set(['가정의학과', '결핵과', '내과', '마취통증의학과', '방사선종양학과', '병리과', '비뇨의학과', '산부인과', '성형외과', '소아청소년과', '신경과', '신경외과', '심장혈관흉부외과', '안과', '영상의학과', '예방의학과', '외과', '응급의학과', '이비인후과', '재활의학과', '정신건강의학과', '정형외과', '직업환경의학과', '진단검사의학과', '치과', '피부과', '핵의학과'])  # 우아병원 진료과 페이지가 있는 진료과(link_medical.py 로 갱신)
 def page_dept(dep):
     path = "/dept/%s/" % DEPT_SLUG[dep]; dd = DEPTS[dep]
     def trows(lst):
@@ -260,7 +262,7 @@ def page_dept(dep):
 {ad()}
 {htm}
 <p class="note">{SRC_NOTE}</p>
-{chips([("진료과 전체", "/dept/"), ("다빈도 질병", "/rank/")])}
+{chips([("진료과 전체", "/dept/"), ("다빈도 질병", "/rank/")] + ([("🏥 전국 %s 병원·의원 찾기" % dep, "https://wooahospital.wooahouse.com/dept/%s/" % quote(dep))] if dep in XL_HOSP_DEPTS else []))}
 """
     write(path, layout(path, "%s 다빈도 질병 TOP 50 — 진료과별 환자수 (%s년)" % (dep, SY), "%s에서 환자가 많은 질병 TOP 50. %s." % (dep, ", ".join(first)), body,
                        [("%s에서 가장 흔한 질병은?" % dep, "%s년 건강보험 청구 기준 %s입니다." % (SY, ", ".join(first)))], [("홈", "/"), ("진료과별", "/dept/"), (dep, path)]), "0.6")
